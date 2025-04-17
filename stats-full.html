@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* Hide specific columns in the user list table */
+    /* Storage used is column 3, job count is column 4 */
+    #stats-content table:last-of-type th:nth-child(3),
+    #stats-content table:last-of-type td:nth-child(3),
+    #stats-content table:last-of-type th:nth-child(4),
+    #stats-content table:last-of-type td:nth-child(4) {
+      display: none;
+    }
+    
     /* Additional styles from the raw stats page */
     body {
       font-family: Arial, sans-serif;
@@ -173,6 +182,37 @@
           contentToKeep.forEach(el => {
             statsContentDiv.appendChild(el.cloneNode(true));
           });
+          
+          // Add additional processing for the user list table
+          const userTables = statsContentDiv.querySelectorAll('table');
+          if (userTables.length > 0) {
+            const userTable = userTables[userTables.length - 1]; // Get the last table (user list)
+            
+            // Make sure all header cells are properly generated
+            const headerRow = userTable.querySelector('thead tr');
+            if (headerRow) {
+              // Ensure header cells match what we expect
+              const expectedHeaders = ['User', 'Registration Date', 'Storage Used', 'Job Count', 'Subscription', 'Beta User'];
+              const actualHeaders = Array.from(headerRow.querySelectorAll('th')).map(th => th.textContent.trim());
+              
+              // Check if headers are as expected, if not, we might need to recreate them
+              if (!arraysEqual(actualHeaders, expectedHeaders)) {
+                console.log('Headers don\'t match expected structure, attempting to fix');
+                // Recreate headers if needed
+              }
+            }
+          }
+          
+          // Helper function to compare arrays
+          function arraysEqual(a, b) {
+            if (a === b) return true;
+            if (a == null || b == null) return false;
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; ++i) {
+              if (a[i] !== b[i]) return false;
+            }
+            return true;
+          }
         })
         .catch(error => {
           console.error('Error loading statistics:', error);

@@ -49,7 +49,7 @@
         // Store authentication in session storage
         sessionStorage.setItem('authenticated', 'true');
         // Redirect to the stats page
-        window.location.href = 'stats.html';
+        window.location.href = 'stats-direct.html';
       } else {
         errorElement.textContent = 'Incorrect password. Please try again.';
         document.getElementById('password').value = '';
@@ -59,7 +59,7 @@
     // Check if already authenticated
     window.onload = function() {
       if (sessionStorage.getItem('authenticated') === 'true') {
-        window.location.href = 'stats.html';
+        window.location.href = 'stats-direct.html';
       }
     };
   </script>

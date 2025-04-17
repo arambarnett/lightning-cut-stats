@@ -132,24 +132,51 @@
         const dateText = doc.querySelector('body > p').textContent;
         document.getElementById('generation-date').textContent = dateText.replace('Generated on ', '');
         
-        // Get all the content after the header
+        // Extract the main content sections directly
         const summaryBox = doc.querySelector('.summary-box');
-        const statsContainers = doc.querySelectorAll('.stats-container');
-        const userList = doc.querySelector('h2:last-of-type').nextElementSibling;
+        const statsBoxes = doc.querySelectorAll('.stats-box');
+        
+        // Find the user list section - it's usually the last h2 followed by a table
+        const allH2s = doc.querySelectorAll('h2');
+        const userListH2 = Array.from(allH2s).find(h2 => h2.textContent.includes('User List'));
+        const userListTable = userListH2 ? userListH2.nextElementSibling : null;
         
         // Populate the content
         const statsContent = document.getElementById('stats-content');
         statsContent.innerHTML = '';
-        statsContent.appendChild(summaryBox.cloneNode(true));
         
-        statsContainers.forEach(container => {
-          statsContent.appendChild(container.cloneNode(true));
+        // Add summary box
+        if (summaryBox) {
+          statsContent.appendChild(summaryBox.cloneNode(true));
+        }
+        
+        // Add stats containers
+        const statsContainer = document.createElement('div');
+        statsContainer.className = 'stats-container';
+        statsBoxes.forEach(box => {
+          statsContainer.appendChild(box.cloneNode(true));
         });
+        statsContent.appendChild(statsContainer);
         
-        const userListTitle = document.createElement('h2');
-        userListTitle.textContent = 'User List';
-        statsContent.appendChild(userListTitle);
-        statsContent.appendChild(userList.cloneNode(true));
+        // Add user list section
+        if (userListH2 && userListTable) {
+          const userListSection = document.createElement('div');
+          const userListHeader = document.createElement('h2');
+          userListHeader.textContent = 'User List';
+          userListSection.appendChild(userListHeader);
+          userListSection.appendChild(userListTable.cloneNode(true));
+          statsContent.appendChild(userListSection);
+        } else {
+          console.error('User list section not found in raw_stats.html');
+          
+          // Add a direct link to view the raw stats if user list isn't found
+          const fallbackSection = document.createElement('div');
+          fallbackSection.innerHTML = `
+            <h2>User List</h2>
+            <p>User list could not be loaded. <a href="raw_stats.html" target="_blank">View raw statistics</a></p>
+          `;
+          statsContent.appendChild(fallbackSection);
+        }
         
       } catch (error) {
         console.error('Error loading statistics:', error);

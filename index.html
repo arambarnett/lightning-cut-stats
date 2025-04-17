@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LightningCut Analytics Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="login-container">
+      <div class="logo">
+        <i class="fas fa-bolt"></i> LightningCut Analytics
+      </div>
+      
+      <div class="login-box">
+        <h2>Investor Access</h2>
+        <p>Please enter the password to access the analytics dashboard.</p>
+        
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter password">
+          <small id="password-error" class="error-message"></small>
+        </div>
+        
+        <button id="login-button" class="login-button">Access Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('login-button').addEventListener('click', function() {
+      validatePassword();
+    });
+    
+    document.getElementById('password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        validatePassword();
+      }
+    });
+    
+    function validatePassword() {
+      const password = document.getElementById('password').value;
+      const errorElement = document.getElementById('password-error');
+      
+      // The required password is "investor"
+      if (password === 'investor') {
+        // Store authentication in session storage
+        sessionStorage.setItem('authenticated', 'true');
+        // Redirect to the stats page
+        window.location.href = 'stats.html';
+      } else {
+        errorElement.textContent = 'Incorrect password. Please try again.';
+        document.getElementById('password').value = '';
+      }
+    }
+    
+    // Check if already authenticated
+    window.onload = function() {
+      if (sessionStorage.getItem('authenticated') === 'true') {
+        window.location.href = 'stats.html';
+      }
+    };
+  </script>
+</body>
+</html>
